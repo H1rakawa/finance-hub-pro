@@ -22,21 +22,22 @@ export function StatCard({ title, value, icon, trend, className, delay = 0 }: St
       )}
       style={{ animationDelay: `${delay}ms` }}
     >
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-muted-foreground">{title}</p>
-          <p className="mt-2 text-2xl font-bold text-foreground">{value}</p>
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">{title}</p>
+          <p className="mt-1 sm:mt-2 text-lg sm:text-2xl font-bold text-foreground truncate">{value}</p>
           {trend && (
             <p className={cn(
-              'mt-2 text-sm font-medium',
+              'mt-1 sm:mt-2 text-xs sm:text-sm font-medium',
               trend.isPositive ? 'text-success' : 'text-destructive'
             )}>
-              {trend.isPositive ? '+' : ''}{trend.value}% so với tháng trước
+              <span className="hidden sm:inline">{trend.isPositive ? '+' : ''}{trend.value}% so với tháng trước</span>
+              <span className="sm:hidden">{trend.isPositive ? '+' : ''}{trend.value}%</span>
             </p>
           )}
         </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-          {icon}
+        <div className="flex h-9 w-9 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl bg-primary/10 text-primary shrink-0">
+          <span className="[&>svg]:h-4 [&>svg]:w-4 sm:[&>svg]:h-6 sm:[&>svg]:w-6">{icon}</span>
         </div>
       </div>
     </div>

@@ -53,17 +53,17 @@ export function AccountCard({
       className="account-card group opacity-0 animate-fade-up"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-4">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
           <div 
-            className="flex h-12 w-12 items-center justify-center rounded-xl"
+            className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl shrink-0"
             style={{ backgroundColor: `${color}20`, color: color }}
           >
-            <Icon className="h-6 w-6" />
+            <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
-          <div>
-            <h3 className="font-semibold text-foreground">{name}</h3>
-            <p className="text-sm text-muted-foreground">{typeLabels[type]}</p>
+          <div className="min-w-0">
+            <h3 className="font-semibold text-foreground text-sm sm:text-base truncate">{name}</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground">{typeLabels[type]}</p>
           </div>
         </div>
         <DropdownMenu>
@@ -71,7 +71,7 @@ export function AccountCard({
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="h-8 w-8 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0"
             >
               <MoreVertical className="h-4 w-4" />
             </Button>
@@ -91,9 +91,9 @@ export function AccountCard({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="mt-4">
+      <div className="mt-3 sm:mt-4">
         <p className={cn(
-          'text-2xl font-bold',
+          'text-xl sm:text-2xl font-bold truncate',
           balance >= 0 ? 'text-foreground' : 'text-destructive'
         )}>
           {formatCurrency(balance, currency)}

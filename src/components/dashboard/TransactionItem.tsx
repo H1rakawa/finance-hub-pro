@@ -42,29 +42,30 @@ export function TransactionItem({
   const Icon = isTransfer ? ArrowLeftRight : isIncome ? ArrowDownLeft : ArrowUpRight;
   
   return (
-    <div className="flex items-center justify-between py-4 border-b border-border last:border-0">
-      <div className="flex items-center gap-4">
+    <div className="flex items-center justify-between py-3 sm:py-4 border-b border-border last:border-0 gap-3">
+      <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
         <div className={cn(
-          'flex h-10 w-10 items-center justify-center rounded-xl',
+          'flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg sm:rounded-xl shrink-0',
           isTransfer 
             ? 'bg-warning/10 text-warning'
             : isIncome 
               ? 'bg-success/10 text-success' 
               : 'bg-destructive/10 text-destructive'
         )}>
-          <Icon className="h-5 w-5" />
+          <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
         </div>
-        <div>
-          <p className="font-medium text-foreground">
+        <div className="min-w-0 flex-1">
+          <p className="font-medium text-foreground text-sm sm:text-base truncate">
             {categoryLabels[category] || category}
           </p>
-          <p className="text-sm text-muted-foreground">
-            {description || accountName} • {formatRelativeDate(date)}
+          <p className="text-xs sm:text-sm text-muted-foreground truncate">
+            <span className="hidden sm:inline">{description || accountName} • </span>
+            {formatRelativeDate(date)}
           </p>
         </div>
       </div>
       <p className={cn(
-        'font-semibold',
+        'font-semibold text-sm sm:text-base shrink-0',
         isTransfer 
           ? 'text-foreground'
           : isIncome 

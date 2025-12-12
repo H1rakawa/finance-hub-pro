@@ -170,25 +170,27 @@ export default function Dashboard() {
     <DashboardLayout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Tổng quan</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Tổng quan</h1>
             <p className="text-muted-foreground mt-1">Chào mừng bạn trở lại!</p>
           </div>
-          <div className="flex gap-3">
-            <Button variant="outline" onClick={() => setShowAddAccount(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Thêm tài khoản
+          <div className="flex gap-2 sm:gap-3">
+            <Button variant="outline" size="sm" className="flex-1 sm:flex-none sm:size-auto" onClick={() => setShowAddAccount(true)}>
+              <Plus className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Thêm tài khoản</span>
+              <span className="sm:hidden">Tài khoản</span>
             </Button>
-            <Button onClick={() => setShowAddTransaction(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Thêm giao dịch
+            <Button size="sm" className="flex-1 sm:flex-none sm:size-auto" onClick={() => setShowAddTransaction(true)}>
+              <Plus className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Thêm giao dịch</span>
+              <span className="sm:hidden">Giao dịch</span>
             </Button>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
           <StatCard
             title="Tổng số dư"
             value={formatCurrency(totalBalance)}
@@ -237,7 +239,7 @@ export default function Dashboard() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
               {accounts.slice(0, 3).map((account, index) => (
                 <AccountCard
                   key={account.id}

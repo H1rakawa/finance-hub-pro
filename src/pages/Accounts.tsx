@@ -97,45 +97,45 @@ export default function Accounts() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Tài khoản</h1>
-            <p className="text-muted-foreground mt-1">Quản lý tất cả tài khoản của bạn</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Tài khoản</h1>
+            <p className="text-muted-foreground mt-1 text-sm sm:text-base">Quản lý tất cả tài khoản của bạn</p>
           </div>
-          <Button onClick={() => setShowAddAccount(true)}>
+          <Button onClick={() => setShowAddAccount(true)} className="w-full sm:w-auto">
             <Plus className="h-4 w-4 mr-2" />
             Thêm tài khoản
           </Button>
         </div>
 
         {/* Summary Card */}
-        <div className="glass-card rounded-2xl p-6">
-          <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <Wallet className="h-7 w-7" />
+        <div className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-lg sm:rounded-xl bg-primary/10 text-primary shrink-0">
+              <Wallet className="h-6 w-6 sm:h-7 sm:w-7" />
             </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Tổng số dư tất cả tài khoản</p>
-              <p className="text-3xl font-bold text-foreground">{formatCurrency(totalBalance)}</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Tổng số dư tất cả tài khoản</p>
+              <p className="text-xl sm:text-3xl font-bold text-foreground truncate">{formatCurrency(totalBalance)}</p>
             </div>
           </div>
         </div>
 
         {/* Accounts Grid */}
         {accounts.length === 0 ? (
-          <div className="glass-card rounded-2xl p-12 text-center">
-            <PiggyBank className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">Chưa có tài khoản nào</h3>
-            <p className="text-muted-foreground mb-6">Bắt đầu bằng cách thêm tài khoản đầu tiên của bạn</p>
+          <div className="glass-card rounded-xl sm:rounded-2xl p-8 sm:p-12 text-center">
+            <PiggyBank className="h-12 w-12 sm:h-16 sm:w-16 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">Chưa có tài khoản nào</h3>
+            <p className="text-sm sm:text-base text-muted-foreground mb-6">Bắt đầu bằng cách thêm tài khoản đầu tiên của bạn</p>
             <Button onClick={() => setShowAddAccount(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Thêm tài khoản
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
             {accounts.map((account, index) => (
               <AccountCard
                 key={account.id}

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Sidebar } from './Sidebar';
+import { Sidebar, MobileHeader } from './Sidebar';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -9,7 +9,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
-      <main className="ml-64 min-h-screen p-8">
+      <MobileHeader />
+      <main className="lg:ml-64 min-h-screen pt-16 lg:pt-0 p-4 sm:p-6 lg:p-8">
         {children}
       </main>
     </div>
