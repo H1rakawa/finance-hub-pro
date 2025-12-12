@@ -118,49 +118,49 @@ export default function Reports() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Báo cáo</h1>
-          <p className="text-muted-foreground mt-1">Thống kê tài chính tháng này</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Báo cáo</h1>
+          <p className="text-muted-foreground mt-1 text-sm sm:text-base">Thống kê tài chính tháng này</p>
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="glass-card rounded-2xl p-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-success/10 text-success">
-                <TrendingUp className="h-6 w-6" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+          <div className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl bg-success/10 text-success shrink-0">
+                <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6" />
               </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Tổng thu nhập</p>
-                <p className="text-2xl font-bold text-success">{formatCurrency(totalIncome)}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="glass-card rounded-2xl p-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
-                <TrendingDown className="h-6 w-6" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Tổng chi tiêu</p>
-                <p className="text-2xl font-bold text-destructive">{formatCurrency(totalExpense)}</p>
+              <div className="min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground">Tổng thu nhập</p>
+                <p className="text-lg sm:text-2xl font-bold text-success truncate">{formatCurrency(totalIncome)}</p>
               </div>
             </div>
           </div>
 
-          <div className="glass-card rounded-2xl p-6">
-            <div className="flex items-center gap-4">
-              <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${
+          <div className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl bg-destructive/10 text-destructive shrink-0">
+                <TrendingDown className="h-5 w-5 sm:h-6 sm:w-6" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground">Tổng chi tiêu</p>
+                <p className="text-lg sm:text-2xl font-bold text-destructive truncate">{formatCurrency(totalExpense)}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl shrink-0 ${
                 netIncome >= 0 ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'
               }`}>
-                <PieChart className="h-6 w-6" />
+                <PieChart className="h-5 w-5 sm:h-6 sm:w-6" />
               </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Thu nhập ròng</p>
-                <p className={`text-2xl font-bold ${netIncome >= 0 ? 'text-success' : 'text-destructive'}`}>
+              <div className="min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground">Thu nhập ròng</p>
+                <p className={`text-lg sm:text-2xl font-bold truncate ${netIncome >= 0 ? 'text-success' : 'text-destructive'}`}>
                   {formatCurrency(netIncome)}
                 </p>
               </div>
@@ -169,64 +169,70 @@ export default function Reports() {
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Expense Chart */}
-          <div className="glass-card rounded-2xl p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Chi tiêu theo danh mục</h3>
+          <div className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Chi tiêu theo danh mục</h3>
             {expenseChartData.length === 0 ? (
-              <div className="h-64 flex items-center justify-center text-muted-foreground">
+              <div className="h-48 sm:h-64 flex items-center justify-center text-muted-foreground text-sm">
                 Chưa có dữ liệu chi tiêu
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <RechartsPie>
                   <Pie
                     data={expenseChartData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
+                    innerRadius={40}
+                    outerRadius={70}
                     paddingAngle={5}
                     dataKey="value"
-                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
-                    labelLine={false}
                   >
                     {expenseChartData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                  <Legend 
+                    wrapperStyle={{ fontSize: '12px' }}
+                    layout="horizontal"
+                    verticalAlign="bottom"
+                  />
                 </RechartsPie>
               </ResponsiveContainer>
             )}
           </div>
 
           {/* Income Chart */}
-          <div className="glass-card rounded-2xl p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Thu nhập theo danh mục</h3>
+          <div className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Thu nhập theo danh mục</h3>
             {incomeChartData.length === 0 ? (
-              <div className="h-64 flex items-center justify-center text-muted-foreground">
+              <div className="h-48 sm:h-64 flex items-center justify-center text-muted-foreground text-sm">
                 Chưa có dữ liệu thu nhập
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <RechartsPie>
                   <Pie
                     data={incomeChartData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
+                    innerRadius={40}
+                    outerRadius={70}
                     paddingAngle={5}
                     dataKey="value"
-                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
-                    labelLine={false}
                   >
                     {incomeChartData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                  <Legend 
+                    wrapperStyle={{ fontSize: '12px' }}
+                    layout="horizontal"
+                    verticalAlign="bottom"
+                  />
                 </RechartsPie>
               </ResponsiveContainer>
             )}
@@ -234,26 +240,26 @@ export default function Reports() {
         </div>
 
         {/* Category Breakdown */}
-        <div className="glass-card rounded-2xl p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4">Chi tiết chi tiêu</h3>
+        <div className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Chi tiết chi tiêu</h3>
           {expenseChartData.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">Chưa có dữ liệu chi tiêu</p>
+            <p className="text-muted-foreground text-center py-6 sm:py-8 text-sm">Chưa có dữ liệu chi tiêu</p>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {expenseChartData
                 .sort((a, b) => b.value - a.value)
                 .map((item, index) => (
-                  <div key={item.name} className="flex items-center gap-4">
+                  <div key={item.name} className="flex items-center gap-3 sm:gap-4">
                     <div
-                      className="w-3 h-3 rounded-full"
+                      className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full shrink-0"
                       style={{ backgroundColor: COLORS[index % COLORS.length] }}
                     />
-                    <div className="flex-1">
-                      <div className="flex justify-between mb-1">
-                        <span className="font-medium text-foreground">{item.name}</span>
-                        <span className="text-muted-foreground">{formatCurrency(item.value)}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between mb-1 gap-2">
+                        <span className="font-medium text-foreground text-sm truncate">{item.name}</span>
+                        <span className="text-muted-foreground text-sm shrink-0">{formatCurrency(item.value)}</span>
                       </div>
-                      <div className="h-2 bg-muted rounded-full overflow-hidden">
+                      <div className="h-1.5 sm:h-2 bg-muted rounded-full overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all duration-500"
                           style={{

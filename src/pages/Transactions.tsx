@@ -104,21 +104,21 @@ export default function Transactions() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Giao dịch</h1>
-            <p className="text-muted-foreground mt-1">Xem và quản lý tất cả giao dịch</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Giao dịch</h1>
+            <p className="text-muted-foreground mt-1 text-sm sm:text-base">Xem và quản lý tất cả giao dịch</p>
           </div>
-          <Button onClick={() => setShowAddTransaction(true)}>
+          <Button onClick={() => setShowAddTransaction(true)} className="w-full sm:w-auto">
             <Plus className="h-4 w-4 mr-2" />
             Thêm giao dịch
           </Button>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -142,12 +142,12 @@ export default function Transactions() {
 
         {/* Transactions List */}
         {filteredTransactions.length === 0 ? (
-          <div className="glass-card rounded-2xl p-12 text-center">
-            <ArrowLeftRight className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">
+          <div className="glass-card rounded-xl sm:rounded-2xl p-8 sm:p-12 text-center">
+            <ArrowLeftRight className="h-12 w-12 sm:h-16 sm:w-16 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">
               {transactions.length === 0 ? 'Chưa có giao dịch nào' : 'Không tìm thấy giao dịch'}
             </h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-sm sm:text-base text-muted-foreground mb-6">
               {transactions.length === 0 
                 ? 'Bắt đầu bằng cách thêm giao dịch đầu tiên' 
                 : 'Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm'}
@@ -160,11 +160,11 @@ export default function Transactions() {
             )}
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {Object.entries(groupedTransactions).map(([date, dayTransactions]) => (
-              <div key={date} className="glass-card rounded-2xl overflow-hidden">
-                <div className="bg-muted/50 px-6 py-3 border-b border-border">
-                  <p className="font-medium text-foreground">
+              <div key={date} className="glass-card rounded-xl sm:rounded-2xl overflow-hidden">
+                <div className="bg-muted/50 px-4 sm:px-6 py-2 sm:py-3 border-b border-border">
+                  <p className="font-medium text-foreground text-sm sm:text-base">
                     {new Date(date).toLocaleDateString('vi-VN', {
                       weekday: 'long',
                       day: '2-digit',
@@ -173,7 +173,7 @@ export default function Transactions() {
                     })}
                   </p>
                 </div>
-                <div className="p-6">
+                <div className="p-3 sm:p-6">
                   {dayTransactions.map((transaction) => (
                     <TransactionItem
                       key={transaction.id}
