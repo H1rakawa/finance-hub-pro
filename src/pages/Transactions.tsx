@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { TransactionItem } from '@/components/dashboard/TransactionItem';
 import { AddTransactionModal } from '@/components/modals/AddTransactionModal';
+import { EditTransactionModal } from '@/components/modals/EditTransactionModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -18,6 +19,7 @@ interface Transaction {
   description: string | null;
   amount: number;
   date: string;
+  account_id: string;
   accounts: {
     name: string;
     currency: string;
@@ -30,6 +32,15 @@ export default function Transactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddTransaction, setShowAddTransaction] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<{
+    id: string;
+    type: string;
+    category: string;
+    description: string | null;
+    amount: number;
+    date: string;
+    account_id: string;
+  } | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
 
@@ -56,6 +67,7 @@ export default function Transactions() {
         description,
         amount,
         date,
+        account_id,
         accounts (
           name,
           currency
@@ -106,7 +118,7 @@ export default function Transactions() {
     <DashboardLayout>
       <div className="space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Giao dịch</h1>
             <p className="text-muted-foreground mt-1 text-sm sm:text-base">Xem và quản lý tất cả giao dịch</p>
@@ -177,6 +189,7 @@ export default function Transactions() {
                   {dayTransactions.map((transaction) => (
                     <TransactionItem
                       key={transaction.id}
+                      id={transaction.id}
                       type={transaction.type}
                       category={transaction.category}
                       description={transaction.description || undefined}
@@ -184,6 +197,8 @@ export default function Transactions() {
                       currency={transaction.accounts?.currency || 'VND'}
                       date={transaction.date}
                       accountName={transaction.accounts?.name || ''}
+                      accountId={transaction.account_id}
+                      onEdit={(t) => setEditingTransaction(t)}
                     />
                   ))}
                 </div>
@@ -193,11 +208,17 @@ export default function Transactions() {
         )}
       </div>
 
-      {/* Modal */}
+      {/* Modals */}
       <AddTransactionModal
         open={showAddTransaction}
         onOpenChange={setShowAddTransaction}
         onSuccess={fetchTransactions}
+      />
+      <EditTransactionModal
+        open={!!editingTransaction}
+        onOpenChange={(open) => !open && setEditingTransaction(null)}
+        onSuccess={fetchTransactions}
+        transaction={editingTransaction}
       />
     </DashboardLayout>
   );

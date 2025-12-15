@@ -1,8 +1,10 @@
-import { ArrowDownLeft, ArrowUpRight, ArrowLeftRight } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, ArrowLeftRight, Pencil } from 'lucide-react';
 import { formatCurrency, formatRelativeDate } from '@/lib/format';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface TransactionItemProps {
+  id?: string;
   type: string;
   category: string;
   description?: string;
@@ -10,6 +12,16 @@ interface TransactionItemProps {
   currency: string;
   date: string;
   accountName: string;
+  accountId?: string;
+  onEdit?: (transaction: {
+    id: string;
+    type: string;
+    category: string;
+    description: string | null;
+    amount: number;
+    date: string;
+    account_id: string;
+  }) => void;
 }
 
 const categoryLabels: Record<string, string> = {
@@ -28,21 +40,38 @@ const categoryLabels: Record<string, string> = {
 };
 
 export function TransactionItem({ 
+  id,
   type, 
   category, 
   description, 
   amount, 
   currency, 
   date,
-  accountName 
+  accountName,
+  accountId,
+  onEdit,
 }: TransactionItemProps) {
   const isIncome = type === 'income';
   const isTransfer = type === 'transfer';
   
   const Icon = isTransfer ? ArrowLeftRight : isIncome ? ArrowDownLeft : ArrowUpRight;
+
+  const handleEdit = () => {
+    if (onEdit && id && accountId) {
+      onEdit({
+        id,
+        type,
+        category,
+        description: description || null,
+        amount,
+        date,
+        account_id: accountId,
+      });
+    }
+  };
   
   return (
-    <div className="flex items-center justify-between py-3 sm:py-4 border-b border-border last:border-0 gap-3">
+    <div className="flex items-center justify-between py-3 sm:py-4 border-b border-border last:border-0 gap-3 group">
       <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
         <div className={cn(
           'flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg sm:rounded-xl shrink-0',
@@ -64,16 +93,28 @@ export function TransactionItem({
           </p>
         </div>
       </div>
-      <p className={cn(
-        'font-semibold text-sm sm:text-base shrink-0',
-        isTransfer 
-          ? 'text-foreground'
-          : isIncome 
-            ? 'text-success' 
-            : 'text-destructive'
-      )}>
-        {isIncome ? '+' : isTransfer ? '' : '-'}{formatCurrency(Math.abs(amount), currency)}
-      </p>
+      <div className="flex items-center gap-2">
+        <p className={cn(
+          'font-semibold text-sm sm:text-base shrink-0',
+          isTransfer 
+            ? 'text-foreground'
+            : isIncome 
+              ? 'text-success' 
+              : 'text-destructive'
+        )}>
+          {isIncome ? '+' : isTransfer ? '' : '-'}{formatCurrency(Math.abs(amount), currency)}
+        </p>
+        {onEdit && id && accountId && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={handleEdit}
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
     </div>
   );
 }
