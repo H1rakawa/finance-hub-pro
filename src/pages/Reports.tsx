@@ -4,14 +4,15 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { formatCurrency } from '@/lib/format';
-import { PieChart, TrendingUp, TrendingDown } from 'lucide-react';
+import { PieChart, TrendingUp, TrendingDown, BarChart3 } from 'lucide-react';
 import { toast } from 'sonner';
-import { PieChart as RechartsPie, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { PieChart as RechartsPie, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 interface Transaction {
   type: string;
   category: string;
   amount: number;
+  date: string;
 }
 
 const categoryLabels: Record<string, string> = {
@@ -58,7 +59,7 @@ export default function Reports() {
     
     const { data, error } = await supabase
       .from('transactions')
-      .select('type, category, amount')
+      .select('type, category, amount, date')
       .gte('date', startOfMonth.toISOString().split('T')[0]);
 
     if (error) {
@@ -105,6 +106,24 @@ export default function Reports() {
     name: categoryLabels[category] || category,
     value: amount,
   }));
+
+  // Group expenses by date for bar chart
+  const expenseByDate = expenseTransactions.reduce((acc, t) => {
+    const date = t.date;
+    if (!acc[date]) {
+      acc[date] = 0;
+    }
+    acc[date] += parseFloat(t.amount.toString());
+    return acc;
+  }, {} as Record<string, number>);
+
+  const dailyExpenseChartData = Object.entries(expenseByDate)
+    .map(([date, amount]) => ({
+      date: new Date(date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }),
+      fullDate: date,
+      amount: amount,
+    }))
+    .sort((a, b) => new Date(a.fullDate).getTime() - new Date(b.fullDate).getTime());
 
   if (authLoading || loading) {
     return (
@@ -166,6 +185,49 @@ export default function Reports() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Daily Expense Bar Chart */}
+        <div className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <BarChart3 className="h-5 w-5 text-primary" />
+            <h3 className="text-base sm:text-lg font-semibold text-foreground">Chi tiêu theo ngày</h3>
+          </div>
+          {dailyExpenseChartData.length === 0 ? (
+            <div className="h-48 sm:h-64 flex items-center justify-center text-muted-foreground text-sm">
+              Chưa có dữ liệu chi tiêu
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={dailyExpenseChartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
+                />
+                <YAxis 
+                  tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`}
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
+                />
+                <Tooltip 
+                  formatter={(value: number) => [formatCurrency(value), 'Chi tiêu']}
+                  contentStyle={{
+                    backgroundColor: 'hsl(var(--card))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px',
+                    color: 'hsl(var(--foreground))'
+                  }}
+                />
+                <Bar 
+                  dataKey="amount" 
+                  fill="hsl(var(--primary))" 
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
 
         {/* Charts */}
@@ -241,7 +303,7 @@ export default function Reports() {
 
         {/* Category Breakdown */}
         <div className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Chi tiết chi tiêu</h3>
+          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Chi tiết chi tiêu theo danh mục</h3>
           {expenseChartData.length === 0 ? (
             <p className="text-muted-foreground text-center py-6 sm:py-8 text-sm">Chưa có dữ liệu chi tiêu</p>
           ) : (
