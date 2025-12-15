@@ -118,7 +118,7 @@ export default function Transactions() {
     <DashboardLayout>
       <div className="space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 md:pt-6">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Giao dịch</h1>
             <p className="text-muted-foreground mt-1 text-sm sm:text-base">Xem và quản lý tất cả giao dịch</p>
