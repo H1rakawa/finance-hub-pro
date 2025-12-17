@@ -26,6 +26,7 @@ const accountTypes = [
   { value: 'bank', label: 'Ngân hàng' },
   { value: 'cash', label: 'Tiền mặt' },
   { value: 'credit_card', label: 'Thẻ tín dụng' },
+  { value: 'e_wallet', label: 'Ví điện tử' },
   { value: 'investment', label: 'Đầu tư' },
 ];
 
