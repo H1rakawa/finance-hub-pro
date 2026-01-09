@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,11 +37,31 @@ const colors = [
 export function AddAccountModal({ open, onOpenChange, onSuccess, editAccount }: AddAccountModalProps) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState(editAccount?.name || '');
-  const [type, setType] = useState(editAccount?.type || 'bank');
-  const [balance, setBalance] = useState(editAccount?.balance?.toString() || '0');
-  const [currency, setCurrency] = useState(editAccount?.currency || 'VND');
-  const [color, setColor] = useState(editAccount?.color || '#10b981');
+  const [name, setName] = useState('');
+  const [type, setType] = useState('bank');
+  const [balance, setBalance] = useState('0');
+  const [currency, setCurrency] = useState('VND');
+  const [color, setColor] = useState('#10b981');
+
+  // Cập nhật form khi editAccount thay đổi hoặc modal mở
+  useEffect(() => {
+    if (open) {
+      if (editAccount) {
+        setName(editAccount.name);
+        setType(editAccount.type);
+        setBalance(editAccount.balance.toString());
+        setCurrency(editAccount.currency);
+        setColor(editAccount.color || '#10b981');
+      } else {
+        // Reset form khi thêm mới
+        setName('');
+        setType('bank');
+        setBalance('0');
+        setCurrency('VND');
+        setColor('#10b981');
+      }
+    }
+  }, [open, editAccount]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
