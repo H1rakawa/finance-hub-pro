@@ -1,5 +1,5 @@
 import { ArrowDownLeft, ArrowUpRight, ArrowLeftRight, Pencil } from 'lucide-react';
-import { formatCurrency, formatRelativeDate } from '@/lib/format';
+import { formatCurrency, formatRelativeDateWithTime, formatTime } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -11,6 +11,7 @@ interface TransactionItemProps {
   amount: number;
   currency: string;
   date: string;
+  createdAt?: string;
   accountName: string;
   accountId?: string;
   onEdit?: (transaction: {
@@ -47,6 +48,7 @@ export function TransactionItem({
   amount, 
   currency, 
   date,
+  createdAt,
   accountName,
   accountId,
   onEdit,
@@ -89,7 +91,7 @@ export function TransactionItem({
           </p>
           <p className="text-xs sm:text-sm text-muted-foreground truncate">
             <span className="hidden sm:inline">{description || accountName} • </span>
-            {formatRelativeDate(date)}
+            {createdAt ? formatTime(createdAt) : formatRelativeDateWithTime(date, date)}
           </p>
         </div>
       </div>

@@ -35,3 +35,26 @@ export function formatRelativeDate(date: string | Date): string {
   
   return formatDate(date);
 }
+
+export function formatTime(date: string | Date): string {
+  const d = new Date(date);
+  return new Intl.DateTimeFormat('vi-VN', {
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(d);
+}
+
+export function formatRelativeDateWithTime(date: string | Date, time: string | Date): string {
+  const d = new Date(date);
+  const now = new Date();
+  const diffTime = now.getTime() - d.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  
+  const timeStr = formatTime(time);
+  
+  if (diffDays === 0) return `Hôm nay, ${timeStr}`;
+  if (diffDays === 1) return `Hôm qua, ${timeStr}`;
+  if (diffDays < 7) return `${diffDays} ngày trước, ${timeStr}`;
+  
+  return `${formatDate(date)}, ${timeStr}`;
+}
