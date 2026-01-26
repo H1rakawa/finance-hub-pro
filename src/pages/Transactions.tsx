@@ -19,6 +19,7 @@ interface Transaction {
   description: string | null;
   amount: number;
   date: string;
+  created_at: string;
   account_id: string;
   accounts: {
     name: string;
@@ -67,13 +68,14 @@ export default function Transactions() {
         description,
         amount,
         date,
+        created_at,
         account_id,
         accounts (
           name,
           currency
         )
       `)
-      .order('date', { ascending: false });
+      .order('created_at', { ascending: false });
 
     if (error) {
       toast.error('Không thể tải danh sách giao dịch');
@@ -186,7 +188,9 @@ export default function Transactions() {
                   </p>
                 </div>
                 <div className="p-3 sm:p-6">
-                  {dayTransactions.map((transaction) => (
+                  {dayTransactions
+                    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                    .map((transaction) => (
                     <TransactionItem
                       key={transaction.id}
                       id={transaction.id}
@@ -196,6 +200,7 @@ export default function Transactions() {
                       amount={transaction.amount}
                       currency={transaction.accounts?.currency || 'VND'}
                       date={transaction.date}
+                      createdAt={transaction.created_at}
                       accountName={transaction.accounts?.name || ''}
                       accountId={transaction.account_id}
                       onEdit={(t) => setEditingTransaction(t)}
