@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { StatCard } from '@/components/dashboard/StatCard';
@@ -9,6 +9,7 @@ import { AddTransactionModal } from '@/components/modals/AddTransactionModal';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import { formatCurrency } from '@/lib/format';
 import { 
   Wallet, 
@@ -69,17 +70,28 @@ export default function Dashboard() {
     }
   }, [user, authLoading, navigate]);
 
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    await Promise.all([fetchAccounts(), fetchTransactions()]);
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
     if (user) {
       fetchData();
     }
-  }, [user]);
+  }, [user, fetchData]);
 
-  const fetchData = async () => {
-    setLoading(true);
-    await Promise.all([fetchAccounts(), fetchTransactions()]);
-    setLoading(false);
-  };
+  // Realtime subscriptions
+  useRealtimeSubscription({
+    table: 'accounts',
+    onChange: fetchData,
+  });
+
+  useRealtimeSubscription({
+    table: 'transactions',
+    onChange: fetchData,
+  });
 
   const fetchAccounts = async () => {
     const { data, error } = await supabase
