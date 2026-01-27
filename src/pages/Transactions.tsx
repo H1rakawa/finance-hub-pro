@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { TransactionItem } from '@/components/dashboard/TransactionItem';
@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import { Plus, Search, ArrowLeftRight } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -51,13 +52,7 @@ export default function Transactions() {
     }
   }, [user, authLoading, navigate]);
 
-  useEffect(() => {
-    if (user) {
-      fetchTransactions();
-    }
-  }, [user]);
-
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from('transactions')
@@ -83,7 +78,24 @@ export default function Transactions() {
       setTransactions(data || []);
     }
     setLoading(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchTransactions();
+    }
+  }, [user, fetchTransactions]);
+
+  // Realtime subscriptions
+  useRealtimeSubscription({
+    table: 'transactions',
+    onChange: fetchTransactions,
+  });
+
+  useRealtimeSubscription({
+    table: 'accounts',
+    onChange: fetchTransactions,
+  });
 
   const filteredTransactions = transactions.filter(t => {
     const matchesSearch = 

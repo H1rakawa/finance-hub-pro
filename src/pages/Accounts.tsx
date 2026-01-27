@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { AccountCard } from '@/components/dashboard/AccountCard';
@@ -6,6 +6,7 @@ import { AddAccountModal } from '@/components/modals/AddAccountModal';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import { formatCurrency } from '@/lib/format';
 import { Plus, PiggyBank, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
@@ -44,13 +45,7 @@ export default function Accounts() {
     }
   }, [user, authLoading, navigate]);
 
-  useEffect(() => {
-    if (user) {
-      fetchAccounts();
-    }
-  }, [user]);
-
-  const fetchAccounts = async () => {
+  const fetchAccounts = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from('accounts')
@@ -63,7 +58,19 @@ export default function Accounts() {
       setAccounts(data || []);
     }
     setLoading(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchAccounts();
+    }
+  }, [user, fetchAccounts]);
+
+  // Realtime subscription for accounts
+  useRealtimeSubscription({
+    table: 'accounts',
+    onChange: fetchAccounts,
+  });
 
   const handleDeleteAccount = async () => {
     if (!deleteAccountId) return;
