@@ -37,6 +37,19 @@ const expenseCategories = [
   { value: 'other_expense', label: 'Chi tiêu khác' },
 ];
 
+// Format number with thousand separators
+const formatNumberWithCommas = (value: string): string => {
+  // Remove all non-digit characters
+  const numericValue = value.replace(/[^\d]/g, '');
+  // Add commas for thousands
+  return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
+// Parse formatted number back to raw number
+const parseFormattedNumber = (value: string): number => {
+  return parseFloat(value.replace(/,/g, '')) || 0;
+};
+
 export function AddTransactionModal({ open, onOpenChange, onSuccess }: AddTransactionModalProps) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -68,6 +81,11 @@ export function AddTransactionModal({ open, onOpenChange, onSuccess }: AddTransa
     }
   };
 
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatNumberWithCommas(e.target.value);
+    setAmount(formatted);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !accountId) return;
@@ -75,7 +93,8 @@ export function AddTransactionModal({ open, onOpenChange, onSuccess }: AddTransa
     setLoading(true);
     
     try {
-      const transactionAmount = type === 'expense' ? -Math.abs(parseFloat(amount)) : Math.abs(parseFloat(amount));
+      const numericAmount = parseFormattedNumber(amount);
+      const transactionAmount = type === 'expense' ? -Math.abs(numericAmount) : Math.abs(numericAmount);
       
       // Insert transaction
       const { error: transactionError } = await supabase
@@ -84,7 +103,7 @@ export function AddTransactionModal({ open, onOpenChange, onSuccess }: AddTransa
           user_id: user.id,
           account_id: accountId,
           type,
-          amount: parseFloat(amount),
+          amount: numericAmount,
           category,
           description: description || null,
           date,
@@ -163,9 +182,10 @@ export function AddTransactionModal({ open, onOpenChange, onSuccess }: AddTransa
             <Label htmlFor="amount">Số tiền</Label>
             <Input
               id="amount"
-              type="number"
+              type="text"
+              inputMode="numeric"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={handleAmountChange}
               placeholder="0"
               required
             />
