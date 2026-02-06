@@ -47,6 +47,7 @@ interface Transaction {
   description: string | null;
   amount: number;
   date: string;
+  created_at: string;
   accounts: {
     name: string;
     currency: string;
@@ -117,12 +118,13 @@ export default function Dashboard() {
         description,
         amount,
         date,
+        created_at,
         accounts (
           name,
           currency
         )
       `)
-      .order('date', { ascending: false })
+      .order('created_at', { ascending: false })
       .limit(10);
 
     if (error) {
@@ -297,6 +299,7 @@ export default function Dashboard() {
                     amount={transaction.amount}
                     currency={transaction.accounts?.currency || 'VND'}
                     date={transaction.date}
+                    createdAt={transaction.created_at}
                     accountName={transaction.accounts?.name || ''}
                   />
                 ))}
