@@ -91,7 +91,7 @@ export function TransactionItem({
           </p>
           <p className="text-xs sm:text-sm text-muted-foreground truncate">
             <span className="hidden sm:inline">{description || accountName} • </span>
-            {formatTime(createdAt || date)}
+            {formatRelativeDateWithTime(createdAt || date, createdAt || date)}
           </p>
         </div>
       </div>
