@@ -31,12 +31,12 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="flex h-16 items-center gap-3 border-b border-border px-6">
+      <Link to="/dashboard" className="flex h-16 items-center gap-3 border-b border-border px-6" onClick={onNavigate}>
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
           <TrendingUp className="h-5 w-5 text-primary-foreground" />
         </div>
         <span className="text-lg font-bold text-foreground">FinanceApp</span>
-      </div>
+      </Link>
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 p-4">
@@ -91,12 +91,12 @@ export function MobileHeader() {
   return (
     <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 border-b border-border bg-sidebar/95 backdrop-blur-lg">
       <div className="flex h-full items-center justify-between px-4">
-        <div className="flex items-center gap-3">
+        <Link to="/dashboard" className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
             <TrendingUp className="h-4 w-4 text-primary-foreground" />
           </div>
           <span className="text-base font-bold text-foreground">FinanceApp</span>
-        </div>
+        </Link>
 
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
