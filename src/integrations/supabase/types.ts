@@ -23,6 +23,7 @@ export type Database = {
           icon: string | null
           id: string
           name: string
+          parent_id: string | null
           type: string
           updated_at: string
           user_id: string
@@ -35,6 +36,7 @@ export type Database = {
           icon?: string | null
           id?: string
           name: string
+          parent_id?: string | null
           type?: string
           updated_at?: string
           user_id: string
@@ -47,11 +49,20 @@ export type Database = {
           icon?: string | null
           id?: string
           name?: string
+          parent_id?: string | null
           type?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "accounts_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       planned_expenses: {
         Row: {
