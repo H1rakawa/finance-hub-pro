@@ -19,7 +19,10 @@ interface AddAccountModalProps {
     balance: number;
     currency: string;
     color: string;
+    parent_id?: string | null;
   } | null;
+  parentId?: string | null;
+  parentAccounts?: { id: string; name: string }[];
 }
 
 const accountTypes = [
@@ -34,7 +37,7 @@ const colors = [
   '#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16'
 ];
 
-export function AddAccountModal({ open, onOpenChange, onSuccess, editAccount }: AddAccountModalProps) {
+export function AddAccountModal({ open, onOpenChange, onSuccess, editAccount, parentId, parentAccounts = [] }: AddAccountModalProps) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
@@ -42,8 +45,8 @@ export function AddAccountModal({ open, onOpenChange, onSuccess, editAccount }: 
   const [balance, setBalance] = useState('0');
   const [currency, setCurrency] = useState('VND');
   const [color, setColor] = useState('#10b981');
+  const [selectedParentId, setSelectedParentId] = useState<string | null>(null);
 
-  // Cập nhật form khi editAccount thay đổi hoặc modal mở
   useEffect(() => {
     if (open) {
       if (editAccount) {
@@ -52,16 +55,19 @@ export function AddAccountModal({ open, onOpenChange, onSuccess, editAccount }: 
         setBalance(editAccount.balance.toString());
         setCurrency(editAccount.currency);
         setColor(editAccount.color || '#10b981');
+        setSelectedParentId(editAccount.parent_id || null);
       } else {
-        // Reset form khi thêm mới
         setName('');
         setType('bank');
         setBalance('0');
         setCurrency('VND');
         setColor('#10b981');
+        setSelectedParentId(parentId || null);
       }
     }
-  }, [open, editAccount]);
+  }, [open, editAccount, parentId]);
+
+  const isChildAccount = !!selectedParentId;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,16 +76,19 @@ export function AddAccountModal({ open, onOpenChange, onSuccess, editAccount }: 
     setLoading(true);
     
     try {
+      const accountData: any = {
+        name,
+        type,
+        balance: parseFloat(balance),
+        currency,
+        color,
+        parent_id: selectedParentId || null,
+      };
+
       if (editAccount) {
         const { error } = await supabase
           .from('accounts')
-          .update({
-            name,
-            type,
-            balance: parseFloat(balance),
-            currency,
-            color,
-          })
+          .update(accountData)
           .eq('id', editAccount.id);
 
         if (error) throw error;
@@ -88,12 +97,8 @@ export function AddAccountModal({ open, onOpenChange, onSuccess, editAccount }: 
         const { error } = await supabase
           .from('accounts')
           .insert({
+            ...accountData,
             user_id: user.id,
-            name,
-            type,
-            balance: parseFloat(balance),
-            currency,
-            color,
           });
 
         if (error) throw error;
@@ -102,12 +107,6 @@ export function AddAccountModal({ open, onOpenChange, onSuccess, editAccount }: 
 
       onSuccess();
       onOpenChange(false);
-      // Reset form
-      setName('');
-      setType('bank');
-      setBalance('0');
-      setCurrency('VND');
-      setColor('#10b981');
     } catch (error: any) {
       toast.error(error.message || 'Có lỗi xảy ra');
     } finally {
@@ -115,15 +114,42 @@ export function AddAccountModal({ open, onOpenChange, onSuccess, editAccount }: 
     }
   };
 
+  const title = editAccount 
+    ? 'Chỉnh sửa tài khoản' 
+    : isChildAccount 
+      ? 'Thêm tài khoản con' 
+      : 'Thêm tài khoản mới';
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {editAccount ? 'Chỉnh sửa tài khoản' : 'Thêm tài khoản mới'}
-          </DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Parent account selector - only show when not forced */}
+          {!parentId && parentAccounts.length > 0 && (
+            <div className="space-y-2">
+              <Label>Thuộc tài khoản cha (tùy chọn)</Label>
+              <Select 
+                value={selectedParentId || 'none'} 
+                onValueChange={(v) => setSelectedParentId(v === 'none' ? null : v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Không có (tài khoản độc lập)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Không có (tài khoản độc lập)</SelectItem>
+                  {parentAccounts.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>
+                      {p.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="name">Tên tài khoản</Label>
             <Input
