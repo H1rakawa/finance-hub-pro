@@ -68,30 +68,15 @@ export function AddTransactionModal({ open, onOpenChange, onSuccess }: AddTransa
   }, [open, user]);
 
   const fetchAccounts = async () => {
-    // Fetch all accounts with parent_id info
-    const { data: allAccounts } = await supabase
+    const { data } = await supabase
       .from('accounts')
-      .select('id, name, parent_id')
+      .select('id, name')
       .order('name');
     
-    if (allAccounts) {
-      // Find parent IDs (accounts that have children)
-      const parentIds = new Set(
-        allAccounts.filter(a => a.parent_id).map(a => a.parent_id as string)
-      );
-      // Only show accounts that are NOT parent groups (child accounts + standalone accounts)
-      const selectableAccounts = allAccounts.filter(a => !parentIds.has(a.id));
-      
-      // Build display names with parent prefix
-      const parentMap = new Map(allAccounts.map(a => [a.id, a.name]));
-      const displayAccounts = selectableAccounts.map(a => ({
-        id: a.id,
-        name: a.parent_id ? `${parentMap.get(a.parent_id)} › ${a.name}` : a.name,
-      }));
-      
-      setAccounts(displayAccounts);
-      if (displayAccounts.length > 0 && !accountId) {
-        setAccountId(displayAccounts[0].id);
+    if (data) {
+      setAccounts(data);
+      if (data.length > 0 && !accountId) {
+        setAccountId(data[0].id);
       }
     }
   };

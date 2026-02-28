@@ -13,7 +13,6 @@ import Accounts from "./pages/Accounts";
 import Transactions from "./pages/Transactions";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
-import PlannedExpenses from "./pages/PlannedExpenses";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,7 +32,6 @@ const App = () => (
             <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
             <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-            <Route path="/planned-expenses" element={<ProtectedRoute><PlannedExpenses /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <FinanceChat />

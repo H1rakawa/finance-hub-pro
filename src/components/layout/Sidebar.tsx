@@ -8,8 +8,7 @@ import {
   LogOut,
   TrendingUp,
   Menu,
-  X,
-  CalendarClock
+  X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
@@ -21,7 +20,6 @@ const navItems = [
   { icon: LayoutDashboard, label: 'Tổng quan', path: '/dashboard' },
   { icon: Wallet, label: 'Tài khoản', path: '/accounts' },
   { icon: ArrowLeftRight, label: 'Giao dịch', path: '/transactions' },
-  { icon: CalendarClock, label: 'Dự chi & Nợ', path: '/planned-expenses' },
   { icon: PieChart, label: 'Báo cáo', path: '/reports' },
   { icon: Settings, label: 'Cài đặt', path: '/settings' },
 ];
